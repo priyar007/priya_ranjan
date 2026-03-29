@@ -1,3 +1,3 @@
 # priya_ranjan
 Repository for RAIPX6
-i want to learn Pythan anf Nodejs. Please guide me. 
+i want to learn Pythan and Nodejs. Please guide me. 
