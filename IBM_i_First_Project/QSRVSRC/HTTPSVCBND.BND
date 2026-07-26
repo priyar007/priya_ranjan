@@ -1,0 +1,11 @@
+/* =============================================================================
+** Binding Directory Source : HTTPSVCBND
+** Purpose : Exported procedure signatures for HTTPSVC service program.
+**           Place in QSRVSRC and create with:
+**   CRTSRVPGM SRVPGM(MYLIB/HTTPSVCLIB) MODULE(MYLIB/HTTPSVC)
+**             SRCFILE(MYLIB/QSRVSRC) SRCMBR(HTTPSVCBND) EXPORT(*ALL)
+** =============================================================================
+*/
+STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('HTTPSVC_V1')
+    EXPORT SYMBOL('HTTP_Get')
+ENDPGMEXP
