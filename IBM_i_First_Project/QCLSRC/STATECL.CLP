@@ -5,7 +5,7 @@
 **            interactive STATEMAIN program.
 **
 ** Steps:
-**   1.  Create the MYLIB library (if needed).
+**   1.  Use library RAIPX61 (PUB400.COM assigned library for user RAIPX6).
 **   2.  Create source physical files.
 **   3.  Compile HTTPSVC module and bind into service program HTTPSVCLIB.
 **   4.  Compile CTRYSVC module.
@@ -13,23 +13,20 @@
 **   6.  Compile & bind STATEMAIN main program.
 **   7.  Call STATEMAIN.
 **
-** Usage    : CALL PGM(MYLIB/STATECL)
+** Usage    : CALL PGM(RAIPX61/STATECL)
+** Server   : PUB400.COM  User: RAIPX6  Library: RAIPX61
 ** =============================================================================
 */
 PGM
 
-    DCL VAR(&LIB) TYPE(*CHAR) LEN(10) VALUE('MYLIB')
+    DCL VAR(&LIB) TYPE(*CHAR) LEN(10) VALUE('RAIPX61')
 
     /* -----------------------------------------------------------------------
-    ** Step 0: Create library if it does not exist
+    ** Step 0: On PUB400.COM library RAIPX61 is pre-assigned — just add to
+    **         the library list.  CRTLIB is not permitted on the shared server.
     ** ----------------------------------------------------------------------- */
-    CHKOBJ  OBJ(&LIB) OBJTYPE(*LIB)
-    MONMSG  MSGID(CPF9801) EXEC(DO)
-        CRTLIB  LIB(&LIB) TEXT('IBM i First Project Library')
-    ENDDO
-
     ADDLIBLE LIB(&LIB) POSITION(*FIRST)
-    MONMSG  MSGID(CPF2103)        /* Already in library list */
+    MONMSG  MSGID(CPF2103)        /* Already in library list — ignore */
 
     /* -----------------------------------------------------------------------
     ** Step 1: Create source physical files (10-char record length + 12 seq/date)
