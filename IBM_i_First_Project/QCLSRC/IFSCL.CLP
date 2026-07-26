@@ -17,7 +17,7 @@
 **              QSRVSRC/HTTPSVCBND.BND
 **
 ** Compile this CL itself first (one time only):
-**   CRTCLPGM PGM(RAIPX61/IFSCL)                                    +
+**   CRTBNDCL PGM(RAIPX61/IFSCL)                                    +
 **            SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QCLSRC/IFSCL.CLP')
 **
 ** Then run:

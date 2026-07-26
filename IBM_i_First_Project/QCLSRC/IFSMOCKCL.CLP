@@ -8,7 +8,7 @@
 **            STATELIST (*FILE DSPF) and STATEMAIN (*MODULE) exist in RAIPX61.
 **
 ** Compile this CL itself first (one time only):
-**   CRTCLPGM PGM(RAIPX61/IFSMOCKCL)                                +
+**   CRTBNDCL PGM(RAIPX61/IFSMOCKCL)                                +
 **            SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QCLSRC/IFSMOCKCL.CLP')
 **
 ** Then run:
