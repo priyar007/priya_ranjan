@@ -31,60 +31,73 @@ PGM
     ADDLIBLE LIB(&LIB) POSITION(*FIRST)
     MONMSG MSGID(CPF2103)
 
-    /* Step 1: Compile Display File from IFS */
+    /* Step 1: Create a temp source physical file for DDS             */
+    /* CRTDSPF does not support SRCSTMF - must copy IFS file into a  */
+    /* source member first using CPYFRMSTMF then compile from member  */
+    CRTSRCPF FILE(&LIB/QDDSSRC) RCDLEN(92) TEXT('DDS Source')
+    MONMSG MSGID(CPF7302)
+
+    CPYFRMSTMF FROMSTMF('/home/RAIPX6/IBM_i_First_Project/QDDSSRC/STATELIST.DSPF') +
+               TOMBR('/QSYS.LIB/RAIPX61.LIB/QDDSSRC.FILE/STATELIST.MBR') +
+               MBROPT(*REPLACE) STMFCCSID(437) DBFCCSID(*STMF)
+    MONMSG MSGID(CPF0000)
+
+    CHGPFM FILE(&LIB/QDDSSRC) MBR(STATELIST) SRCTYPE(DSPF)
+    MONMSG MSGID(CPF0000)
+
+    /* Step 2: Compile Display File from source member */
     CRTDSPF FILE(&LIB/STATELIST)                                     +
-            SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QDDSSRC/STATELIST.DSPF') +
+            SRCFILE(&LIB/QDDSSRC) SRCMBR(STATELIST)                 +
             TEXT('State List - Windowed Subfile')
     MONMSG MSGID(CPF0000)
 
-    /* Step 2: Compile HTTPSVC module from IFS */
+    /* Step 3: Compile HTTPSVC module from IFS                        */
+    /* CRTRPGMOD does not take DFTACTGRP/ACTGRP - those go on CRTPGM  */
     CRTRPGMOD MODULE(&LIB/HTTPSVC)                                   +
               SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QRPGLESRC/HTTPSVC.RPGLE') +
-              DFTACTGRP(*NO) ACTGRP(QILE)                            +
               TEXT('HTTP GET utility module')
     MONMSG MSGID(CPF0000)
 
-    /* Step 3: Create service program HTTPSVCLIB from HTTPSVC module */
+    /* Step 4: Create service program HTTPSVCLIB from HTTPSVC module  */
+    /* EXPORT(*ALL) used for compatibility with all IBM i releases     */
     CRTSRVPGM SRVPGM(&LIB/HTTPSVCLIB)                               +
               MODULE(&LIB/HTTPSVC)                                   +
-              SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QSRVSRC/HTTPSVCBND.BND') +
-              EXPORT(*SRCFILE)                                        +
+              EXPORT(*ALL)                                            +
               ACTGRP(*CALLER)                                         +
               TEXT('HTTP Service Program')
     MONMSG MSGID(CPF0000)
 
-    /* Step 4: Create binding directory and add the service program */
+    /* Step 5: Create binding directory and add the service program */
     CRTBNDDIR BNDDIR(&LIB/HTTPSVCLIB)
     MONMSG MSGID(CPF0000)
     ADDBNDDIRE BNDDIR(&LIB/HTTPSVCLIB)                               +
                OBJ((*LIBL/HTTPSVCLIB *SRVPGM))
     MONMSG MSGID(CPF0000)
 
-    /* Step 5: Compile CTRYSVC module from IFS                       */
-    /* /COPY in CTRYSVC.RPGLE uses: './QRPGLESRC/HTTPSVC.H'          */
-    /* Compiler resolves that path relative to the SRCSTMF directory  */
+    /* Step 6: Compile CTRYSVC module from IFS                        */
+    /* /COPY in CTRYSVC.RPGLE uses: './QRPGLESRC/HTTPSVC.H'           */
+    /* Compiler resolves relative to the SRCSTMF parent directory     */
     CRTRPGMOD MODULE(&LIB/CTRYSVC)                                   +
               SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QRPGLESRC/CTRYSVC.RPGLE') +
-              DFTACTGRP(*NO) ACTGRP(QILE)                            +
               TEXT('Country / State service module')
     MONMSG MSGID(CPF0000)
 
-    /* Step 6: Compile STATEMAIN module from IFS */
+    /* Step 7: Compile STATEMAIN module from IFS */
     CRTRPGMOD MODULE(&LIB/STATEMAIN)                                 +
               SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QRPGLESRC/STATEMAIN.RPGLE') +
-              DFTACTGRP(*NO) ACTGRP(QILE)                            +
               TEXT('States Viewer main module')
     MONMSG MSGID(CPF0000)
 
-    /* Step 7: Bind CTRYSVC + STATEMAIN modules into STATEMAIN program */
+    /* Step 8: Bind CTRYSVC + STATEMAIN into final program            */
+    /* ACTGRP goes here on CRTPGM not on CRTRPGMOD                    */
     CRTPGM PGM(&LIB/STATEMAIN)                                       +
            MODULE(&LIB/CTRYSVC &LIB/STATEMAIN)                       +
            BNDDIR(&LIB/HTTPSVCLIB QC2LE)                             +
-           ACTGRP(QILE)                                              +
+           ACTGRP(QILE)                                               +
            TEXT('States Viewer - Main Program')
     MONMSG MSGID(CPF0000)
 
-    /* Step 8: Launch the program */
+    /* Step 9: Launch the program */
     CALL PGM(&LIB/STATEMAIN)
 
 ENDPGM

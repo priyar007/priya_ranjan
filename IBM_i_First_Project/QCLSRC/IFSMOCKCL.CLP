@@ -30,9 +30,9 @@ PGM
     MONMSG MSGID(CPF2103)
 
     /* Step 1: Compile STATEMOCK module from IFS */
+    /* CRTRPGMOD does not take DFTACTGRP/ACTGRP - goes on CRTPGM     */
     CRTRPGMOD MODULE(&LIB/STATEMOCK)                                 +
               SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QRPGLESRC/STATEMOCK.RPGLE') +
-              DFTACTGRP(*NO) ACTGRP(QILE)                            +
               TEXT('Mock Country/State module - no HTTP')
     MONMSG MSGID(CPF0000)
 
