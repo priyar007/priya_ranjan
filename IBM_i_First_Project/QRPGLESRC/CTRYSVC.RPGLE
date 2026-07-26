@@ -17,7 +17,7 @@
 Ctl-Opt NoMain DftActGrp(*No) ActGrp('MAINGRP')
         BndDir('QC2LE':'HTTPSVCLIB');
 
-/COPY QRPGLESRC,HTTPSVC.H
+/COPY './QRPGLESRC/HTTPSVC.H'
 
 // ---------------------------------------------------------------------------
 // Constants
