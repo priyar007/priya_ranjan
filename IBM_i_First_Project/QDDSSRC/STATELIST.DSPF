@@ -1,6 +1,6 @@
      A*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      A* Display File : STATELIST
-     A* Purpose      : Windowed subfile — lists states for a given country.
+     A* Purpose      : Windowed subfile - lists states for a given country.
      A*                Supports PgUp / PgDn scrolling.
      A* Compile      : CRTDSPF FILE(MYLIB/STATELIST)
      A*                         SRCFILE(MYLIB/QDDSSRC) SRCMBR(STATELIST)
@@ -11,14 +11,14 @@
      A                                      CA12(12 'F12=Cancel')
      A*
      A*--------------------------------------------------------------------------
-     A* Record: SFLRCD  — Subfile record (one state per line)
+     A* Record: SFLRCD  - Subfile record (one state per line)
      A*--------------------------------------------------------------------------
      A          R SFLRCD                    SFL
      A            SFLRRN         4S 0H
      A            STATENAME     40A  O  9  4
      A*
      A*--------------------------------------------------------------------------
-     A* Record: SFLCTL  — Subfile control record (windowed)
+     A* Record: SFLCTL  - Subfile control record (windowed)
      A*--------------------------------------------------------------------------
      A          R SFLCTL                    SFLCTL(SFLRCD)
      A                                      SFLSIZ(0200)
@@ -32,37 +32,37 @@
      A  33                                   SFLCLR
      A  34                                   SFLEND(*MORE)
      A            SFLRCDNBR      4S 0H       SFLRCDNBR(CURSOR)
-     A                                      1  4'IBM i — States Viewer'
+     A                                      1  4'IBM i - States Viewer'
      A                                        DSPATR(HI)
      A                                      2  4'Country :'
      A            CTRYNAME      30A  O  2 14DSPATR(HI)
-     A                                      3  4'──────────────────────────────+
-     A                                       ──────────────────────────────────+
-     A                                       ──'
+     A                                      3  4'------------------------------+
+     A                                       ----------------------------------+
+     A                                       --'
      A                                      4  4'  #   State / Region'
-     A                                      5  4'──────────────────────────────+
-     A                                       ──────────────────────────────────+
-     A                                       ──'
-     A                                     17  4'──────────────────────────────+
-     A                                       ──────────────────────────────────+
-     A                                       ──'
+     A                                      5  4'------------------------------+
+     A                                       ----------------------------------+
+     A                                       --'
+     A                                     17  4'------------------------------+
+     A                                       ----------------------------------+
+     A                                       --'
      A                                     18  2'F3=Exit  F12=Cancel  +/-=Scroll'
      A                                        COLOR(BLU)
      A*
      A*--------------------------------------------------------------------------
-     A* Record: MSGCTL  — Bottom message bar (error / info)
+     A* Record: MSGCTL  - Bottom message bar (error / info)
      A*--------------------------------------------------------------------------
      A          R MSGCTL
      A                                      OVERLAY
      A            MSGLINE       79A  O 24  1COLOR(RED)
      A*
      A*--------------------------------------------------------------------------
-     A* Record: PROMPTRCD — Input screen for country name
+     A* Record: PROMPTRCD - Input screen for country name
      A*--------------------------------------------------------------------------
      A          R PROMPTRCD
      A                                      CF03(03 'F3=Exit')
      A                                      CF12(12 'F12=Cancel')
-     A                                      1  2'IBM i First Project — State Li+
+     A                                      1  2'IBM i First Project - State Li+
      A                                       ster'
      A                                        DSPATR(HI)
      A                                      3  2'Enter country name and press En+
@@ -71,8 +71,8 @@
      A                                        DSPATR(UL)
      A                                      5  2'F3=Exit'
      A                                        COLOR(BLU)
-     A                                     23  2'──────────────────────────────+
-     A                                       ──────────────────────────────────+
-     A                                       ──'
+     A                                     23  2'------------------------------+
+     A                                       ----------------------------------+
+     A                                       --'
      A            ERRMSG        79A  O 24  1COLOR(RED)
      A*

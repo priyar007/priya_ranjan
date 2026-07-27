@@ -37,11 +37,11 @@ PGM
     CRTSRCPF FILE(&LIB/QDDSSRC) RCDLEN(92) TEXT('DDS Source')
     MONMSG MSGID(CPF7302)
 
-    /* STMFCCSID(1208) = UTF-8 (file saved by modern editor, no BOM)     */
-    /* DBFCCSID(37)    = EBCDIC US — IBM i native encoding                */
+    /* STMFCCSID(*PCASC) = pure 7-bit ASCII - no Unicode chars in source */
+    /* DBFCCSID(37)      = EBCDIC US - IBM i native encoding              */
     CPYFRMSTMF FROMSTMF('/home/RAIPX6/IBM_i_First_Project/QDDSSRC/STATELIST.DSPF') +
                TOMBR('/QSYS.LIB/RAIPX61.LIB/QDDSSRC.FILE/STATELIST.MBR') +
-               MBROPT(*REPLACE) STMFCCSID(1208) DBFCCSID(37)
+               MBROPT(*REPLACE) STMFCCSID(*PCASC) DBFCCSID(37)
     MONMSG MSGID(CPF0000)
 
     CHGPFM FILE(&LIB/QDDSSRC) MBR(STATELIST) SRCTYPE(DSPF)
