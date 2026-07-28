@@ -60,9 +60,9 @@ PGM
     MONMSG MSGID(CPF0000)
 
     /* Step 5: Create binding directory and add service program */
-    CRTBNDDIR BNDDIR(&LIB/HTTPSVCPGM)
+    CRTBNDDIR BNDDIR(&LIB/HTTPBNDDIR)
     MONMSG MSGID(CPF0000)
-    ADDBNDDIRE BNDDIR(&LIB/HTTPSVCPGM)                               +
+    ADDBNDDIRE BNDDIR(&LIB/HTTPBNDDIR)                               +
                OBJ((*LIBL/HTTPSVCPGM *SRVPGM))
     MONMSG MSGID(CPF0000)
 
@@ -83,10 +83,11 @@ PGM
     /* Step 8: Bind CTRYSVC + STATEMAIN into main program             */
     /* ACTGRP and BNDDIR go here on CRTPGM, not on CRTRPGMOD          */
     CRTPGM PGM(&LIB/STATEMAIN)                                       +
-           MODULE(&LIB/CTRYSVC &LIB/STATEMAIN)                       +
-           BNDDIR(&LIB/HTTPSVCPGM QC2LE)                             +
+           MODULE(&LIB/CTRYSVC &LIB/STATEMAIN)                       +                            
            ACTGRP(QILE)                                               +
-           TEXT('States Viewer - Main Program')
+           TEXT('States Viewer - Main Program')                       +
+           ENTMOD(RAIPX61/STATEMAIN)                                  +
+           BNDDIR(&LIB/HTTPSVCPGM QC2LE)  
     MONMSG MSGID(CPF0000)
 
     /* Step 9: Launch the program */
