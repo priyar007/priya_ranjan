@@ -15,7 +15,7 @@
 //           SRCMBR(STATEMOCK) DFTACTGRP(*NO) ACTGRP(QILE)
 // =============================================================================
 
-Ctl-Opt NoMain DftActGrp(*No) ActGrp('MAINGRP');
+Ctl-Opt NoMain;
 
 // ---------------------------------------------------------------------------
 // Constants & template DS — must exactly match CTRYSVC

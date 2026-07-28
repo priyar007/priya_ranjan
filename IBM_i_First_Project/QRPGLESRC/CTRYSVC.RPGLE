@@ -14,7 +14,7 @@
 //           SRCMBR(CTRYSVC) DFTACTGRP(*NO) ACTGRP(QILE)
 // =============================================================================
 
-Ctl-Opt NoMain DftActGrp(*No) ActGrp('MAINGRP')
+Ctl-Opt NoMain
         BndDir('QC2LE':'HTTPSVCLIB');
 
 /COPY './QRPGLESRC/HTTPSVC.H'

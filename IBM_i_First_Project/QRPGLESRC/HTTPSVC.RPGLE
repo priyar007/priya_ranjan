@@ -11,7 +11,7 @@
 // Service : Bound into MYLIB/HTTPSVCLIB via CRTSRVPGM
 // =============================================================================
 
-Ctl-Opt NoMain DftActGrp(*No) ActGrp('HTTPSVCGRP')
+Ctl-Opt NoMain
         BndDir('QC2LE':'QHTTPAPI');
 
 // ---------------------------------------------------------------------------
