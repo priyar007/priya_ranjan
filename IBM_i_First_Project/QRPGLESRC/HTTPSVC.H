@@ -6,6 +6,6 @@
 
 Dcl-Pr HTTP_Get        ExtProc('HTTP_Get');
   pUrl               Varchar(1024) Const;
-  pResponse          Varchar(65535);
+  pResponse          Varchar(32740);
   pErrMsg            Varchar(256);
 End-Pr;

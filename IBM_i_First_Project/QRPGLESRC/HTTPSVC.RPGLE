@@ -23,7 +23,7 @@ Ctl-Opt NoMain;
 // ---------------------------------------------------------------------------
 Dcl-Pr HTTP_Get ExtProc('HTTP_Get');
   pUrl      Varchar(1024) Const;
-  pResponse Varchar(65535);
+  pResponse Varchar(32740);
   pErrMsg   Varchar(256);
 End-Pr;
 
@@ -41,11 +41,11 @@ End-Pr;
 Dcl-Proc HTTP_Get Export;
   Dcl-Pi *N;
     pUrl      Varchar(1024) Const;
-    pResponse Varchar(65535);
+    pResponse Varchar(32740);
     pErrMsg   Varchar(256);
   End-Pi;
 
-  Dcl-S  httpResult  Varchar(65535)  Inz(*Blanks);
+  Dcl-S  httpResult  Varchar(32740)  Inz(*Blanks);
   Dcl-S  sqlState    Char(5)         Inz(*Blanks);
   Dcl-S  sqlMsg      Varchar(256)    Inz(*Blanks);
 
@@ -58,12 +58,12 @@ Dcl-Proc HTTP_Get Export;
   //   - Passing NULL uses the system default (no extra headers).
   //   - The function raises SQL exception on HTTP error or network failure.
   // -------------------------------------------------------------------------
+  // HTTPGETCLOB returns CLOB - assigned directly to VARCHAR host variable.
+  // No outer CAST needed; VARCHAR(32740) is the SQL max for CAST/host vars.
   Exec SQL
-    SELECT CAST(
-             SYSTOOLS.HTTPGETCLOB(
-               CAST(:pUrl AS VARCHAR(1024)),
-               CAST(NULL AS CLOB)
-             ) AS VARCHAR(65535)
+    SELECT SYSTOOLS.HTTPGETCLOB(
+             CAST(:pUrl AS VARCHAR(1024)),
+             CAST(NULL AS CLOB)
            )
     INTO :httpResult
     FROM SYSIBM.SYSDUMMY1;
