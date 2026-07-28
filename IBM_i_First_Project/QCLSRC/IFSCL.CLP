@@ -53,15 +53,18 @@ PGM
             TEXT('State List - Windowed Subfile')
     MONMSG MSGID(CPF0000)
 
-    /* Step 3: Compile HTTPSVC module from IFS                        */
-    /* CRTRPGMOD does not take DFTACTGRP/ACTGRP - those go on CRTPGM  */
-    CRTRPGMOD MODULE(&LIB/HTTPSVCPGM)                                +
-              SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QRPGLESRC/HTTPSVC.RPGLE') +
-              TEXT('HTTP GET utility module')
+    /* Step 3: Compile HTTPSVC as SQLRPGLE module from IFS            */
+    /* CRTSQLRPGI handles embedded SQL + RPG in one step              */
+    /* SYSTOOLS.HTTPGETCLOB() - no extra binding directory required   */
+    CRTSQLRPGI OBJ(&LIB/HTTPSVCPGM)                                 +
+               SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QRPGLESRC/HTTPSVC.RPGLE') +
+               OBJTYPE(*MODULE)                                       +
+               COMMIT(*NONE) CLOSQLCSR(*ENDMOD)                      +
+               TEXT('HTTP GET utility module')
     MONMSG MSGID(CPF0000)
 
     /* Step 4: Create service program HTTPSVCPGM from HTTPSVCPGM module */
-    /* curl via system() - only QC2LE needed, no QHTTPAPI               */
+    /* SQL runtime is part of QC2LE - no extra BNDDIR needed            */
     CRTSRVPGM SRVPGM(&LIB/HTTPSVCPGM)                               +
               MODULE(&LIB/HTTPSVCPGM)                                +
               EXPORT(*ALL)                                            +

@@ -39,15 +39,18 @@ PGM
             TEXT('State List - Windowed Subfile')
     MONMSG MSGID(CPF0000)
 
-    /* Step 3: Compile HTTPSVC module                                 */
-    /* CRTRPGMOD does not accept DFTACTGRP/ACTGRP - those go on CRTPGM */
-    CRTRPGMOD MODULE(&LIB/HTTPSVCPGM)                                +
-              SRCFILE(&LIB/QRPGLESRC) SRCMBR(HTTPSVCPGM)            +
-              TEXT('HTTP GET utility module')
+    /* Step 3: Compile HTTPSVC SQLRPGLE module                        */
+    /* CRTSQLRPGI compiles embedded SQL + RPG into a *MODULE          */
+    /* SYSTOOLS.HTTPGETCLOB() needs no extra binding directory        */
+    CRTSQLRPGI OBJ(&LIB/HTTPSVCPGM)                                 +
+               SRCFILE(&LIB/QRPGLESRC) SRCMBR(HTTPSVCPGM)          +
+               OBJTYPE(*MODULE)                                       +
+               COMMIT(*NONE) CLOSQLCSR(*ENDMOD)                      +
+               TEXT('HTTP GET utility module')
     MONMSG MSGID(CPF0000)
 
     /* Step 4: Create HTTPSVCPGM service program                      */
-    /* curl via system() - only QC2LE needed, no QHTTPAPI             */
+    /* SQL runtime is part of QC2LE - no extra BNDDIR needed          */
     CRTSRVPGM SRVPGM(&LIB/HTTPSVCPGM)                               +
               MODULE(&LIB/HTTPSVCPGM)                                +
               EXPORT(*ALL)                                            +
