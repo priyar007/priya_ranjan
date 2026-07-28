@@ -45,21 +45,20 @@ Dcl-Proc HTTP_Get Export;
     pErrMsg   Varchar(256);
   End-Pi;
 
+  // SQLERRMC is injected by the SQL precompiler into the global SQLCA DS.
+  // It holds the first 70 chars of the error message token - no need for
+  // a separate GET DIAGNOSTICS call.
   Dcl-S  httpResult  Varchar(32740)  Inz(*Blanks);
-  Dcl-S  sqlState    Char(5)         Inz(*Blanks);
-  Dcl-S  sqlMsg      Varchar(256)    Inz(*Blanks);
+  Dcl-S  errTok      Char(70)        Inz(*Blanks);
 
   pResponse = *Blanks;
   pErrMsg   = *Blanks;
 
   // -------------------------------------------------------------------------
   // SYSTOOLS.HTTPGETCLOB(url, httpHeader)
-  //   - Second param is a CLOB of HTTP headers in 'name: value' format.
-  //   - Passing NULL uses the system default (no extra headers).
-  //   - The function raises SQL exception on HTTP error or network failure.
+  //   CLOB result assigned directly to VARCHAR(32740) host variable via INTO.
+  //   Second param NULL = use system default HTTP headers.
   // -------------------------------------------------------------------------
-  // HTTPGETCLOB returns CLOB - assigned directly to VARCHAR host variable.
-  // No outer CAST needed; VARCHAR(32740) is the SQL max for CAST/host vars.
   Exec SQL
     SELECT SYSTOOLS.HTTPGETCLOB(
              CAST(:pUrl AS VARCHAR(1024)),
@@ -71,16 +70,12 @@ Dcl-Proc HTTP_Get Export;
   If SQLCODE = 0;
     pResponse = httpResult;
   ElseIf SQLCODE = 100;
-    // No data returned
     pErrMsg = 'No data returned. Try after some time...';
   Else;
-    // SQL error - connection failed, timeout, or HTTP error
-    Exec SQL GET DIAGNOSTICS CONDITION 1
-      :sqlState = RETURNED_SQLSTATE,
-      :sqlMsg   = MESSAGE_TEXT;
-
-    If sqlMsg <> *Blanks;
-      pErrMsg = %SubSt(%TrimR(sqlMsg) + %Repeat(' ':256) : 1 : 256);
+    // Use SQLERRMC from SQLCA (injected by SQL precompiler) for error detail.
+    errTok = %TrimR(SQLERRMC);
+    If errTok <> *Blanks;
+      pErrMsg = %SubSt(errTok : 1 : %Min(%Len(%TrimR(errTok)) : 256));
     Else;
       pErrMsg = 'Server could not be reached. Try after some time...';
     EndIf;
