@@ -2,7 +2,7 @@
 // =============================================================================
 // Program : STATEMAIN
 // Purpose : Main interactive program.
-//           1. Shows PROMPTRCD \Z user enters a country name.
+//           1. Shows PROMPTRCD - user enters a country name.
 //           2. Calls GetStates (CTRYSVC) via HTTPS.
 //           3. Loads state names into windowed subfile STATELIST.
 //           4. Displays subfile with PgUp/PgDn scrolling.
@@ -14,18 +14,18 @@
 //           BNDDIR(HTTPSVCLIB)
 // =============================================================================
 
-Ctl-Opt BndDir('QC2LE':'HTTPBNDDIR')
+Ctl-Opt BndDir('QC2LE':'HTTPSVCLIB')
         Option(*SrcStmt : *NoDebugIO);
 
 // ---------------------------------------------------------------------------
 // Display file
 // ---------------------------------------------------------------------------
-Dcl-F STATELIST WorkStn UsrOpn IndDs(Ind) sfile(SFLRCD : SFLRCDNBR) ;
+Dcl-F  STATELIST WorkStn SflCtl(SFLCTL) UsrOpn IndDs(Ind);
 
 // ---------------------------------------------------------------------------
 // Indicator data structure (maps *IN indicators to named booleans)
 // ---------------------------------------------------------------------------
-Dcl-Ds Ind ;
+Dcl-Ds Ind Based(%Addr(*IN));
   ExitKey    Ind Pos(3);    // CA03 F3
   CancelKey  Ind Pos(12);   // CA12 F12
   SflDsp     Ind Pos(31);   // Subfile display  indicator
@@ -86,7 +86,7 @@ DoU ExitKey Or CancelKey;
   ExitKey   = *Off;
   CancelKey = *Off;
 
-  Write PROMPTRCD;
+  // Exfmt writes the record then reads it (Write+Read in one op)
   Exfmt PROMPTRCD;
 
   If ExitKey Or CancelKey;
@@ -96,7 +96,7 @@ DoU ExitKey Or CancelKey;
   countryName = %TrimR(CTRYINPUT);
   If countryName = *Blanks;
     MSGLINE = 'Please enter a country name.';
-    Write PROMPTRCD;
+    Write MSGCTL;
     Iter;
   EndIf;
 
@@ -109,6 +109,7 @@ DoU ExitKey Or CancelKey;
   // ---- Handle web-service error --------------------------------------------
   If wsErrMsg <> *Blanks;
     MSGLINE = %Left(%TrimR(wsErrMsg) : 79);
+    Write MSGCTL;
     Iter;                          // Loop back to prompt
   EndIf;
 
@@ -119,7 +120,7 @@ DoU ExitKey Or CancelKey;
   SflDsp    = *Off;
   SflDspCtl = *Off;
   SflClr    = *On;
-  Write SFLCTL1;
+  Write SFLCTL;
   SflClr    = *Off;
 
   For i = 1 to stateCount;
@@ -137,7 +138,7 @@ DoU ExitKey Or CancelKey;
   CancelKey = *Off;
 
   DoU ExitKey Or CancelKey;
-    Exfmt SFLCTL1;
+    Exfmt SFLCTL;
     If ExitKey Or CancelKey;
       Leave;
     EndIf;

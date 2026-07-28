@@ -1,0 +1,11 @@
+{
+  "code-for-ibmi.connectionSettings": [
+    {
+      "host": "pub400.com",
+      "deployMethod": "changed",
+      "sourceFileEncoding": "37",
+      "sourceFileCCSID": 37,
+      "localEncoding": "UTF-8"
+    }
+  ]
+}

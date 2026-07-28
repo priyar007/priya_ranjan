@@ -23,7 +23,7 @@
      A*-------------------------------------------------------------------------
      A* Record: SFLCTL  - Subfile control record (windowed)
      A*-------------------------------------------------------------------------
-     A          R SFLCTL1                    SFLCTL(SFLRCD)
+     A          R SFLCTL                    SFLCTL(SFLRCD)
      A*%%TS  SD  20260727  175315  RAIPX6      REL-V7R5M0  5770-WDS
      A                                      OVERLAY
      A  31                                  SFLDSP
