@@ -1,3 +1,4 @@
+     A*%%TS  SD  20260727  175315  RAIPX6      REL-V7R5M0  5770-WDS
      A*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      A* Display File : STATELIST
      A* Purpose      : Windowed subfile - lists states for a given country.
@@ -5,7 +6,8 @@
      A* Compile      : CRTDSPF FILE(RAIPX61/STATELIST)
      A*                        SRCFILE(RAIPX61/QDDSSRC) SRCMBR(STATELIST)
      A*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-     A                                      DSPSIZ(24 80 *DS3)
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS4)
      A                                      INDARA
      A                                      CA03(03 'F3=Exit')
      A                                      CA12(12 'F12=Cancel')
@@ -14,39 +16,41 @@
      A* Record: SFLRCD  - Subfile record (one state per line)
      A*-------------------------------------------------------------------------
      A          R SFLRCD                    SFL
+     A*%%TS  SD  20260727  175315  RAIPX6      REL-V7R5M0  5770-WDS
      A            SFLRRN         4S 0H
-     A            STATENAME     40A  O  9  4
+     A            STATENAME     40A  O  6  5
      A*
      A*-------------------------------------------------------------------------
      A* Record: SFLCTL  - Subfile control record (windowed)
      A*-------------------------------------------------------------------------
      A          R SFLCTL                    SFLCTL(SFLRCD)
+     A*%%TS  SD  20260727  175315  RAIPX6      REL-V7R5M0  5770-WDS
+     A                                      OVERLAY
+     A  31                                  SFLDSP
+     A  32                                  SFLDSPCTL
+     A  33                                  SFLCLR
+     A  34                                  SFLEND(*MORE)
      A                                      SFLSIZ(0200)
      A                                      SFLPAG(0008)
-     A                                      WINDOW(4 5 18 70)
-     A                                      WDWBORDER((*COLOR WHT)           +
-     A                                      (*DSPATR HI)                     +
-     A                                      (*CHAR '+-+| |+-+'))
-     A  31                                   SFLDSP
-     A  32                                   SFLDSPCTL
-     A  33                                   SFLCLR
-     A  34                                   SFLEND(*MORE)
-     A            SFLRCDNBR      4S 0H       SFLRCDNBR(CURSOR)
-     A                                      1  4'IBM i - States Viewer'
-     A                                        DSPATR(HI)
-     A                                      2  4'Country :'
-     A            CTRYNAME      30A  O  2 14DSPATR(HI)
-     A                                      3  4'------------------------------+
-     A                                      -----------------------------------'
-     A                                      4  4'  #   State / Region'
-     A                                      5  4'------------------------------+
-     A                                      -----------------------------------'
-     A                                     17  4'-----------------------------+
-     A                                      -----------------------------------'
-     A                                     18  2'F3=Exit  F12=Cancel  +/-=Scrol+
-     A                                      l'
-     A                                        COLOR(BLU)
-     A*
+     A                                      WINDOW(4 5 18 60)
+     A                                      WDWBORDER((*COLOR YLW) (*DSPATR RI)-
+     A                                       (*CHAR '        '))
+     A            SFLRCDNBR      4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  5'IBM I - STATES VIEWER'
+     A                                      DSPATR(HI)
+     A                                  2  5'Country :'
+     A            CTRYNAME      30A  O  2 16DSPATR(HI)
+     A                                  3  5'-----------------------------------
+     A                                      -----------'
+     A                                  4  5'  #   State / Region'
+     A                                  5  5'-----------------------------------
+     A                                      -----------'
+     A
+     A*                                16  5'-----------------------------------
+     A*                                     -----------'
+     A*                                15  5'F3=Exit  F12=Cancel  +/-=Scroll'
+     A*                                     COLOR(BLU)
+     A
      A*-------------------------------------------------------------------------
      A* Record: MSGCTL  - Bottom message bar (error / info)
      A*-------------------------------------------------------------------------
@@ -58,16 +62,15 @@
      A* Record: PROMPTRCD - Input screen for country name
      A*-------------------------------------------------------------------------
      A          R PROMPTRCD
-     A                                      1  2'IBM i First Project - State Li+
+     A                                  1  2'IBM i First Project - State Li+
      A                                      ster'
-     A                                        DSPATR(HI)
-     A                                      3  2'Enter country name and press E+
+     A                                      DSPATR(HI)
+     A                                  3  2'Enter country name and press E+
      A                                      nter:'
      A            CTRYINPUT     30A  B  3 38CHECK(LC)
-     A                                        DSPATR(UL)
-     A                                      5  2'F3=Exit'
-     A                                        COLOR(BLU)
-     A                                     23  2'-----------------------------+
+     A                                      DSPATR(UL)
+     A                                 22  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 23  2'---------------------------------+
      A                                      -----------------------------------'
      A            ERRMSG        79A  O 24  1COLOR(RED)
-     A*
