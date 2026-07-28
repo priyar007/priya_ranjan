@@ -3,26 +3,41 @@
 // Module  : CTRYSVC
 // Purpose : Country / State service.
 //           - Accepts a country name.
-//           - Calls  https://restcountries.com/v3.1/name/{country}
-//           - Parses the JSON response to extract the list of states/regions
-//             (administrative divisions) using the "subregion" or
-//             "capitalInfo" structure — for a full state list the module
-//             uses  https://countriesnow.space/api/v0.1/countries/states
-//           - Populates a keyed array of state names passed in by STATEMAIN.
+//           - Calls the countriesnow.space states API (GET variant)
+//           - Parses the JSON response to extract state names
+//           - Populates an array of state names passed in by STATEMAIN.
 //
-// Compile : CRTRPGMOD MODULE(MYLIB/CTRYSVC) SRCFILE(MYLIB/QRPGLESRC)
+// Compile : CRTRPGMOD MODULE(RAIPX61/CTRYSVC) SRCFILE(RAIPX61/QRPGLESRC)
 //           SRCMBR(CTRYSVC) DFTACTGRP(*NO) ACTGRP(QILE)
 // =============================================================================
 
-Ctl-Opt NoMain BndDir('QC2LE':'HTTPBNDDIR');  ;
+Ctl-Opt NoMain BndDir('QC2LE':'HTTPBNDDIR');
 
-/COPY QRPGLESRC,HTTPSVC 
+/COPY QRPGLESRC,HTTPSVC
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 Dcl-C  MAX_STATES    200;
 Dcl-C  API_BASE      'https://countriesnow.space/api/v0.1/countries/states';
+
+// ---------------------------------------------------------------------------
+// Single-character hex constants - avoids EBCDIC/ASCII transfer corruption.
+// When a UTF-8 source file is uploaded to IBM i without CCSID conversion,
+// these characters map to wrong code points in EBCDIC CCSID 37:
+//
+//   Character  ASCII  EBCDIC(37)   RPG hex literal
+//   "          x22    x7F          x'7F'
+//   [          x5B    xAD          x'AD'
+//   ]          x5D    xBD          x'BD'
+//   {          x7B    xC0          x'C0'
+//
+// Using x'...' constants makes the value CCSID-independent.
+// ---------------------------------------------------------------------------
+Dcl-C  DQ   x'7F';
+Dcl-C  LBR  x'AD';
+Dcl-C  RBR  x'BD';
+Dcl-C  LBC  x'C0';
 
 // ---------------------------------------------------------------------------
 // Exported data structures
@@ -43,10 +58,10 @@ End-Pr;
 
 // ---------------------------------------------------------------------------
 // Procedure: GetStates
-//   pCountry  – country name (e.g. "India")
-//   pStates   – output array of state names
-//   pCount    – number of states found
-//   pErrMsg   – blank = success; populated = error message
+//   pCountry  - country name (e.g. India)
+//   pStates   - output array of state names
+//   pCount    - number of states found
+//   pErrMsg   - blank = success; populated = error message
 // ---------------------------------------------------------------------------
 Dcl-Proc GetStates Export;
   Dcl-Pi *N;
@@ -70,33 +85,8 @@ Dcl-Proc GetStates Export;
   pCount  = 0;
   pErrMsg = *Blanks;
 
-  // Build POST-style URL (API accepts GET with query)
-  // countriesnow returns JSON:
-  //  { "error":false, "data":{ "name":"India",
-  //    "states":[{"name":"Andhra Pradesh",...}, ...] } }
-
-  // The API requires a POST with JSON body; we simulate with HTTPS POST.
-  // For simplicity we use the GET variant that accepts a query param:
-  //   GET /api/v0.1/countries/states?country=India  (not officially supported)
-  // IBM i HTTPPOSTCLOB would be needed for POST — here we use the GET-only
-  // open API that returns states directly:
-  //   https://api.countrystatecity.in   (needs key)
-  //
-  // We therefore use the freely available:
-  //   GET https://countriesnow.space/api/v0.1/countries/states
-  //   with body  {"country":"India"}
-  //
-  // Because QHttpGetClob is GET-only we use an alternative free GET endpoint:
-  //   GET https://restcountries.com/v3.1/name/{country}?fullText=true
-  //   and extract "region","subregion" as a label; then use:
-  //   GET https://www.travel-advisory.info/api?countrycode=XX
-  //
-  // BEST free GET-only states API:
-  //   https://api.first.org/data/v1/countries  -- no states
-  //
-  // We use: https://countriesnow.space/api/v0.1/countries/states/q?country=India
-  // (undocumented but functional GET variant)
-
+  // Build GET URL:
+  // https://countriesnow.space/api/v0.1/countries/states/q?country=India
   url = API_BASE + '/q?country=' + %TrimR(pCountry);
 
   HTTP_Get( url : payload : errHttp );
@@ -112,18 +102,23 @@ Dcl-Proc GetStates Export;
   EndIf;
 
   // -------------------------------------------------------------------------
-  // Lightweight JSON parser
-  // Looks for repeated pattern:  "name":"<state name>"
-  // in the "states" array portion of the response.
+  // Lightweight JSON parser.
+  // Uses hex constants for " [ ] to survive EBCDIC/ASCII transfer.
+  //
+  // Target JSON shape:
+  //   {"error":false,"data":{"name":"India","states":[{"name":"Goa",...}]}}
+  //
+  // Step 1 - find  "states":[
+  // Step 2 - inside that array find each  "name":"<value>"
   // -------------------------------------------------------------------------
 
-  // First, navigate to "states":[ section
-  searchStr = '"states":[';
+  // searchStr = "states":[
+  searchStr = DQ + 'states' + DQ + ':' + LBR;
   pos1      = %Scan(searchStr : payload);
 
   If pos1 = 0;
-    // Try "error":true pattern — API returned an error object
-    If %Scan('"error":true' : payload) > 0;
+    // Check for "error":true
+    If %Scan(DQ + 'error' + DQ + ':true' : payload) > 0;
       pErrMsg = 'Country not found. Please check the country name.';
     Else;
       pErrMsg = 'Unexpected response from server. Try after some time...';
@@ -131,17 +126,18 @@ Dcl-Proc GetStates Export;
     Return;
   EndIf;
 
-  // Work on the sub-string after "states":[
+  // Isolate the content after "states":[
   remainder = %SubSt(payload : pos1 + %Len(searchStr));
 
-  // Find closing ] of the states array
-  posEnd = %Scan(']' : remainder);
+  // Trim at the closing ] of the states array
+  posEnd = %Scan(RBR : remainder);
   If posEnd > 1;
     remainder = %SubSt(remainder : 1 : posEnd - 1);
   EndIf;
 
-  // Parse each {"name":"<value>" ...} object
-  searchStr = '"name":"';
+  // Parse each "name":"<value>" pair
+  // searchStr = "name":"
+  searchStr = DQ + 'name' + DQ + ':' + DQ;
   pos1      = 1;
 
   DoW idx < MAX_STATES;
@@ -150,8 +146,8 @@ Dcl-Proc GetStates Export;
       Leave;
     EndIf;
 
-    pos2 = pos1 + %Len(searchStr);  // start of value
-    posEnd = %Scan('"' : remainder : pos2);
+    pos2   = pos1 + %Len(searchStr);   // first char of value
+    posEnd = %Scan(DQ : remainder : pos2);
     If posEnd = 0;
       Leave;
     EndIf;
