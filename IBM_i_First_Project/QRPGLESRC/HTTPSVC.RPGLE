@@ -12,7 +12,7 @@
 // =============================================================================
 
 Ctl-Opt NoMain
-        BndDir('QC2LE':'QHTTPAPI');
+        BndDir('QC2LE':'QSYS/QHTTPAPI');
 
 // ---------------------------------------------------------------------------
 // Prototype — exported so CTRYSVC can /COPY this header

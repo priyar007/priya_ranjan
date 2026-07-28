@@ -39,48 +39,51 @@ PGM
             TEXT('State List - Windowed Subfile')
     MONMSG MSGID(CPF0000)
 
-    /* Step 3: Compile HTTPSVC module */
-    CRTRPGMOD MODULE(&LIB/HTTPSVC)                                   +
-              SRCFILE(&LIB/QRPGLESRC) SRCMBR(HTTPSVC)               +
-              DFTACTGRP(*NO) ACTGRP(QILE)                            +
+    /* Step 3: Compile HTTPSVC module                                 */
+    /* CRTRPGMOD does not accept DFTACTGRP/ACTGRP - those go on CRTPGM */
+    CRTRPGMOD MODULE(&LIB/HTTPSVCPGM)                                +
+              SRCFILE(&LIB/QRPGLESRC) SRCMBR(HTTPSVCPGM)            +
               TEXT('HTTP GET utility module')
     MONMSG MSGID(CPF0000)
 
-    /* Step 4: Create HTTPSVCLIB service program */
-    CRTSRVPGM SRVPGM(&LIB/HTTPSVCLIB)                               +
-              MODULE(&LIB/HTTPSVC)                                   +
+    /* Step 4: Create HTTPSVCPGM service program                      */
+    /* BNDDIR(QSYS/QHTTPAPI) required to resolve QHttpGetClob         */
+    /* No binder source needed when EXPORT(*ALL) is used              */
+    CRTSRVPGM SRVPGM(&LIB/HTTPSVCPGM)                               +
+              MODULE(&LIB/HTTPSVCPGM)                                +
               EXPORT(*ALL)                                            +
-              BNDDIR(&LIB/HTTPSVCBND)                                +
+              BNDDIR(QSYS/QHTTPAPI QC2LE)                            +
               ACTGRP(*CALLER)                                         +
               TEXT('HTTP Service Program')
     MONMSG MSGID(CPF0000)
 
     /* Step 5: Create binding directory and add service program */
-    CRTBNDDIR BNDDIR(&LIB/HTTPSVCLIB)
+    CRTBNDDIR BNDDIR(&LIB/HTTPSVCPGM)
     MONMSG MSGID(CPF0000)
-    ADDBNDDIRE BNDDIR(&LIB/HTTPSVCLIB)                               +
-               OBJ((*LIBL/HTTPSVCLIB *SRVPGM))
+    ADDBNDDIRE BNDDIR(&LIB/HTTPSVCPGM)                               +
+               OBJ((*LIBL/HTTPSVCPGM *SRVPGM))
     MONMSG MSGID(CPF0000)
 
-    /* Step 6: Compile CTRYSVC module */
+    /* Step 6: Compile CTRYSVC module                                 */
+    /* CRTRPGMOD does not accept DFTACTGRP/ACTGRP                     */
     CRTRPGMOD MODULE(&LIB/CTRYSVC)                                   +
               SRCFILE(&LIB/QRPGLESRC) SRCMBR(CTRYSVC)               +
-              DFTACTGRP(*NO) ACTGRP(QILE)                            +
               TEXT('Country / State service module')
     MONMSG MSGID(CPF0000)
 
-    /* Step 7: Compile STATEMAIN module */
-    CRTRPGMOD MODULE(&LIB/STATEMAIN)                                 +
+    /* Step 7: Compile STATEMAIN module                               */
+    /* CRTRPGMOD does not accept DFTACTGRP/ACTGRP                     */
+    CRTRPGMOD MODULE(&LIB/STATEMAIN)                                  +
               SRCFILE(&LIB/QRPGLESRC) SRCMBR(STATEMAIN)             +
-              DFTACTGRP(*NO) ACTGRP(QILE)                            +
               TEXT('States Viewer main module')
     MONMSG MSGID(CPF0000)
 
-    /* Step 8: Bind CTRYSVC + STATEMAIN into main program */
+    /* Step 8: Bind CTRYSVC + STATEMAIN into main program             */
+    /* ACTGRP and BNDDIR go here on CRTPGM, not on CRTRPGMOD          */
     CRTPGM PGM(&LIB/STATEMAIN)                                       +
            MODULE(&LIB/CTRYSVC &LIB/STATEMAIN)                       +
-           BNDDIR(&LIB/HTTPSVCLIB QC2LE)                             +
-           ACTGRP(QILE)                                              +
+           BNDDIR(&LIB/HTTPSVCPGM QC2LE)                             +
+           ACTGRP(QILE)                                               +
            TEXT('States Viewer - Main Program')
     MONMSG MSGID(CPF0000)
 

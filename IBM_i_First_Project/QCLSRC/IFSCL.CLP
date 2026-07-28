@@ -55,25 +55,26 @@ PGM
 
     /* Step 3: Compile HTTPSVC module from IFS                        */
     /* CRTRPGMOD does not take DFTACTGRP/ACTGRP - those go on CRTPGM  */
-    CRTRPGMOD MODULE(&LIB/HTTPSVC)                                   +
+    CRTRPGMOD MODULE(&LIB/HTTPSVCPGM)                                +
               SRCSTMF('/home/RAIPX6/IBM_i_First_Project/QRPGLESRC/HTTPSVC.RPGLE') +
               TEXT('HTTP GET utility module')
     MONMSG MSGID(CPF0000)
 
-    /* Step 4: Create service program HTTPSVCLIB from HTTPSVC module  */
-    /* EXPORT(*ALL) used for compatibility with all IBM i releases     */
-    CRTSRVPGM SRVPGM(&LIB/HTTPSVCLIB)                               +
-              MODULE(&LIB/HTTPSVC)                                   +
+    /* Step 4: Create service program HTTPSVCPGM from HTTPSVCPGM module */
+    /* BNDDIR(QSYS/QHTTPAPI) required to resolve QHttpGetClob           */
+    CRTSRVPGM SRVPGM(&LIB/HTTPSVCPGM)                               +
+              MODULE(&LIB/HTTPSVCPGM)                                +
               EXPORT(*ALL)                                            +
+              BNDDIR(QSYS/QHTTPAPI QC2LE)                            +
               ACTGRP(*CALLER)                                         +
               TEXT('HTTP Service Program')
     MONMSG MSGID(CPF0000)
 
     /* Step 5: Create binding directory and add the service program */
-    CRTBNDDIR BNDDIR(&LIB/HTTPSVCLIB)
+    CRTBNDDIR BNDDIR(&LIB/HTTPSVCPGM)
     MONMSG MSGID(CPF0000)
-    ADDBNDDIRE BNDDIR(&LIB/HTTPSVCLIB)                               +
-               OBJ((*LIBL/HTTPSVCLIB *SRVPGM))
+    ADDBNDDIRE BNDDIR(&LIB/HTTPSVCPGM)                               +
+               OBJ((*LIBL/HTTPSVCPGM *SRVPGM))
     MONMSG MSGID(CPF0000)
 
     /* Step 6: Compile CTRYSVC module from IFS                        */
@@ -94,7 +95,7 @@ PGM
     /* ACTGRP goes here on CRTPGM not on CRTRPGMOD                    */
     CRTPGM PGM(&LIB/STATEMAIN)                                       +
            MODULE(&LIB/CTRYSVC &LIB/STATEMAIN)                       +
-           BNDDIR(&LIB/HTTPSVCLIB QC2LE)                             +
+           BNDDIR(&LIB/HTTPSVCPGM QC2LE)                             +
            ACTGRP(QILE)                                               +
            TEXT('States Viewer - Main Program')
     MONMSG MSGID(CPF0000)
