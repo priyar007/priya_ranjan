@@ -47,12 +47,11 @@ PGM
     MONMSG MSGID(CPF0000)
 
     /* Step 4: Create HTTPSVCPGM service program                      */
-    /* BNDDIR(QSYS/QHTTPAPI) required to resolve QHttpGetClob         */
-    /* No binder source needed when EXPORT(*ALL) is used              */
+    /* curl via system() - only QC2LE needed, no QHTTPAPI             */
     CRTSRVPGM SRVPGM(&LIB/HTTPSVCPGM)                               +
               MODULE(&LIB/HTTPSVCPGM)                                +
               EXPORT(*ALL)                                            +
-              BNDDIR(QSYS/QHTTPAPI QC2LE)                            +
+              BNDDIR(QC2LE)                                           +
               ACTGRP(*CALLER)                                         +
               TEXT('HTTP Service Program')
     MONMSG MSGID(CPF0000)
