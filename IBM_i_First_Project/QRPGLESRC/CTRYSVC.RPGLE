@@ -16,7 +16,7 @@
 
 Ctl-Opt NoMain;
 
-/COPY './QRPGLESRC/HTTPSVC.H'
+/COPY 'RAIPX61/QRPGLESRC/HTTPSVC.H'
 
 // ---------------------------------------------------------------------------
 // Constants

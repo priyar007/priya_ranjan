@@ -14,14 +14,13 @@
 //           BNDDIR(HTTPSVCLIB)
 // =============================================================================
 
-Ctl-Opt DftActGrp(*No) ActGrp('MAINGRP')
-        BndDir('QC2LE':'HTTPSVCLIB')
+Ctl-Opt BndDir('QC2LE':'HTTPSVCLIB')
         Option(*SrcStmt *NoDebugIO);
 
 // ---------------------------------------------------------------------------
 // Display file
 // ---------------------------------------------------------------------------
-Dcl-F  STATELIST WorkStn SflCtl(*In32) UsrOpn Indds(Ind);
+Dcl-F  STATELIST WorkStn SflCtl(SFLCTL) UsrOpn Indds(Ind);
 
 // ---------------------------------------------------------------------------
 // Indicator data structure (maps *IN indicators to named booleans)
@@ -70,7 +69,6 @@ Dcl-S  CTRYNAME     Char(30);
 Dcl-S  STATENAME    Char(40);
 Dcl-S  SFLRRN       Packed(4:0);
 Dcl-S  SFLRCDNBR    Packed(4:0) Inz(1);
-Dcl-S  ERRMSG       Char(79);
 Dcl-S  MSGLINE      Char(79);
 
 // ===========================================================================
@@ -110,12 +108,12 @@ DoU ExitKey Or CancelKey;
 
   // ---- Handle web-service error --------------------------------------------
   If errMsg <> *Blanks;
-    ERRMSG = %SubSt(%TrimR(errMsg) + %Repeat(' ':79) : 1 : 79);
+    ERRMSG = %Left(%TrimR(errMsg) : 79);
     Iter;                          // Loop back to prompt
   EndIf;
 
   // ---- Load subfile --------------------------------------------------------
-  CTRYNAME   = %SubSt(%TrimR(countryName) + %Repeat(' ':30) : 1 : 30);
+  CTRYNAME   = %Left(%TrimR(countryName) : 30);
 
   // Clear previous subfile contents
   SflDsp    = *Off;
@@ -127,8 +125,7 @@ DoU ExitKey Or CancelKey;
   For i = 1 to stateCount;
     rrn        = i;
     SFLRRN     = rrn;
-    STATENAME  = %SubSt(%TrimR(States(i).StateName) + %Repeat(' ':40)
-                        : 1 : 40);
+    STATENAME  = %Left(%TrimR(States(i).StateName) : 40);
     Write SFLRCD;
   EndFor;
 
