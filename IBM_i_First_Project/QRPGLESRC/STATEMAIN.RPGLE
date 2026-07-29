@@ -108,15 +108,12 @@ DoU ExitKey Or CancelKey;
 
   // ---- Handle web-service error --------------------------------------------
   If wsErrMsg <> *Blanks;
-    // MSGLINE = %Left(%TrimR(wsErrMsg) : 79);
-    MSGLINE = %TrimR(wsErrMsg);
+    MSGLINE = %Left(%TrimR(wsErrMsg) : 79);
     Iter;                          // Loop back to prompt
   EndIf;
 
   // ---- Load subfile --------------------------------------------------------
-  // CTRYNAME   = %Left(%TrimR(countryName) : 30);
-  CTRYNAME   = %TrimR(countryName) ;
-
+  CTRYNAME   =       %TrimR(countryName)      ;
 
   // Clear previous subfile contents
   SflDsp    = *Off;
@@ -127,10 +124,8 @@ DoU ExitKey Or CancelKey;
 
   For i = 1 to stateCount;
     rrn        = i;
-    SFLRRN     = rrn;
-    SFLRCDNBR = rrn;
-    // STATENAME  = %Left(%TrimR(States(i).StateName) : 40);
-    STATENAME  = %TrimR(States(i).StateName);
+    SFLRCDNBR  = rrn;
+    STATENAME  =       %TrimR(States(i).StateName)      ;
     Write SFLRCD;
   EndFor;
 

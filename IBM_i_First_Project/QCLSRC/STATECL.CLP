@@ -83,11 +83,11 @@ PGM
     /* Step 8: Bind CTRYSVC + STATEMAIN into main program             */
     /* ACTGRP and BNDDIR go here on CRTPGM, not on CRTRPGMOD          */
     CRTPGM PGM(&LIB/STATEMAIN)                                       +
-           MODULE(&LIB/CTRYSVC &LIB/STATEMAIN)                       +                            
+           MODULE(&LIB/CTRYSVC &LIB/STATEMAIN)                       +
            ACTGRP(QILE)                                               +
            TEXT('States Viewer - Main Program')                       +
            ENTMOD(RAIPX61/STATEMAIN)                                  +
-           BNDDIR(&LIB/HTTPSVCPGM QC2LE)  
+           BNDDIR(&LIB/HTTPSVCPGM QC2LE)
     MONMSG MSGID(CPF0000)
 
     /* Step 9: Launch the program */

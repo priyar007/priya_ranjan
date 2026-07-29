@@ -6,7 +6,7 @@
 //           - Calls  https://restcountries.com/v3.1/name/{country}
 //           - Parses the JSON response to extract the list of states/regions
 //             (administrative divisions) using the "subregion" or
-//             "capitalInfo" structure — for a full state list the module
+//             "capitalInfo" structure  for a full state list the module
 //             uses  https://countriesnow.space/api/v0.1/countries/states
 //           - Populates a keyed array of state names passed in by STATEMAIN.
 //
@@ -14,9 +14,9 @@
 //           SRCMBR(CTRYSVC) DFTACTGRP(*NO) ACTGRP(QILE)
 // =============================================================================
 
-Ctl-Opt NoMain BndDir('QC2LE':'HTTPBNDDIR');  
+Ctl-Opt NoMain BndDir('QC2LE':'HTTPBNDDIR');
 
-/COPY QRPGLESRC,HTTPSVC 
+/COPY QRPGLESRC,HTTPSVC
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -43,10 +43,10 @@ End-Pr;
 
 // ---------------------------------------------------------------------------
 // Procedure: GetStates
-//   pCountry  – country name (e.g. "India")
-//   pStates   – output array of state names
-//   pCount    – number of states found
-//   pErrMsg   – blank = success; populated = error message
+//   pCountry   country name (e.g. "India")
+//   pStates    output array of state names
+//   pCount     number of states found
+//   pErrMsg    blank = success; populated = error message
 // ---------------------------------------------------------------------------
 Dcl-Proc GetStates Export;
   Dcl-Pi *N;
@@ -57,10 +57,10 @@ Dcl-Proc GetStates Export;
   End-Pi;
 
   Dcl-S  url         Varchar(1024);
-  Dcl-S  payload     Varchar(65535);
+  Dcl-S  payload     Varchar(32740);
   Dcl-S  errHttp     Varchar(256);
   Dcl-S  searchStr   Varchar(80);
-  Dcl-S  remainder   Varchar(65535);
+  Dcl-S  remainder   Varchar(32740);
   Dcl-S  token       Varchar(80);
   Dcl-S  pos1        Int(10)  Inz(0);
   Dcl-S  pos2        Int(10)  Inz(0);
@@ -78,7 +78,7 @@ Dcl-Proc GetStates Export;
   // The API requires a POST with JSON body; we simulate with HTTPS POST.
   // For simplicity we use the GET variant that accepts a query param:
   //   GET /api/v0.1/countries/states?country=India  (not officially supported)
-  // IBM i HTTPPOSTCLOB would be needed for POST — here we use the GET-only
+  // IBM i HTTPPOSTCLOB would be needed for POST  here we use the GET-only
   // open API that returns states directly:
   //   https://api.countrystatecity.in   (needs key)
   //
@@ -122,7 +122,7 @@ Dcl-Proc GetStates Export;
   pos1      = %Scan(searchStr : payload);
 
   If pos1 = 0;
-    // Try "error":true pattern — API returned an error object
+    // Try "error":true pattern  API returned an error object
     If %Scan('"error":true' : payload) > 0;
       pErrMsg = 'Country not found. Please check the country name.';
     Else;
