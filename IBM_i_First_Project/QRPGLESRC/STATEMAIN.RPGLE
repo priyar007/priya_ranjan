@@ -108,7 +108,8 @@ DoU ExitKey Or CancelKey;
 
   // ---- Handle web-service error --------------------------------------------
   If wsErrMsg <> *Blanks;
-    MSGLINE = %Left(%TrimR(wsErrMsg) : 79);
+    // MSGLINE = %Left(%TrimR(wsErrMsg) : 79);
+    MSGLINE = %TrimR(wsErrMsg);
     Iter;                          // Loop back to prompt
   EndIf;
 
@@ -127,6 +128,7 @@ DoU ExitKey Or CancelKey;
   For i = 1 to stateCount;
     rrn        = i;
     SFLRRN     = rrn;
+    SFLRCDNBR = rrn;
     // STATENAME  = %Left(%TrimR(States(i).StateName) : 40);
     STATENAME  = %TrimR(States(i).StateName);
     Write SFLRCD;
