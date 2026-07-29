@@ -113,7 +113,9 @@ DoU ExitKey Or CancelKey;
   EndIf;
 
   // ---- Load subfile --------------------------------------------------------
-  CTRYNAME   = %Left(%TrimR(countryName) : 30);
+  // CTRYNAME   = %Left(%TrimR(countryName) : 30);
+  CTRYNAME   = %TrimR(countryName) ;
+
 
   // Clear previous subfile contents
   SflDsp    = *Off;
@@ -125,7 +127,8 @@ DoU ExitKey Or CancelKey;
   For i = 1 to stateCount;
     rrn        = i;
     SFLRRN     = rrn;
-    STATENAME  = %Left(%TrimR(States(i).StateName) : 40);
+    // STATENAME  = %Left(%TrimR(States(i).StateName) : 40);
+    STATENAME  = %TrimR(States(i).StateName);
     Write SFLRCD;
   EndFor;
 
