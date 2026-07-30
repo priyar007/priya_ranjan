@@ -2,6 +2,7 @@
   "code-for-ibmi.connectionSettings": [
     {
       "host": "pub400.com",
+      "port": 23,
       "deployMethod": "changed",
       "sourceFileEncoding": "37",
       "sourceFileCCSID": 37,
