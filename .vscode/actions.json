@@ -6,7 +6,8 @@
     "environment": "ile",
     "extensions": [
       "RPGLE"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create RPGLE Module",
@@ -15,7 +16,8 @@
     "environment": "ile",
     "extensions": [
       "RPGLE"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create SQLRPGLE Program",
@@ -24,7 +26,8 @@
     "environment": "ile",
     "extensions": [
       "SQLRPGLE"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create SQLRPGLE Module",
@@ -33,7 +36,8 @@
     "environment": "ile",
     "extensions": [
       "SQLRPGLE"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create COBOL Program (SQL)",
@@ -48,7 +52,8 @@
       "CBLLE",
       "CBL",
       "CBBLE"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create COBOL Module (SQL)",
@@ -63,7 +68,8 @@
       "CBLLE",
       "CBL",
       "CBBLE"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create C Program",
@@ -72,7 +78,8 @@
     "environment": "ile",
     "extensions": [
       "C"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create C Module",
@@ -81,7 +88,8 @@
     "environment": "ile",
     "extensions": [
       "C"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create CPP Program",
@@ -90,7 +98,8 @@
     "environment": "ile",
     "extensions": [
       "CPP"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Create CPP Module",
@@ -99,7 +108,8 @@
     "environment": "ile",
     "extensions": [
       "CPP"
-    ]
+    ],
+    "type": "file"
   },
   {
     "extensions": [
@@ -109,7 +119,8 @@
     "name": "Create Bound CL Program",
     "command": "CRTBNDCL PGM(&CURLIB/&NAME) SRCSTMF('&RELATIVEPATH') OPTION(*EVENTF) DBGVIEW(*SOURCE)",
     "deployFirst": true,
-    "environment": "ile"
+    "environment": "ile",
+    "type": "file"
   },
   {
     "extensions": [
@@ -118,7 +129,8 @@
     "name": "Create Command",
     "command": "CRTCMD CMD(&CURLIB/&NAME) PGM(&CURLIB/&NAME) SRCSTMF('&RELATIVEPATH') OPTION(*EVENTF)",
     "deployFirst": true,
-    "environment": "ile"
+    "environment": "ile",
+    "type": "file"
   },
   {
     "extensions": [
@@ -135,7 +147,8 @@
     "name": "Run SQL Statements (RUNSQLSTM)",
     "command": "RUNSQLSTM SRCSTMF('&FULLPATH') COMMIT(*NONE) NAMING(*SQL)",
     "deployFirst": true,
-    "environment": "ile"
+    "environment": "ile",
+    "type": "file"
   },
   {
     "name": "Create DSPF",
@@ -144,7 +157,8 @@
     "deployFirst": true,
     "extensions": [
       "dspf"
-    ]
+    ],
+    "type": "file"
   },
   {
     "extensions": [
@@ -152,7 +166,8 @@
     ],
     "name": "Create Service Program (CRTSRVPGM EXPORT(*ALL))",
     "command": "CRTSRVPGM SRVPGM(&CURLIB/&NAME) EXPORT(*ALL) BNDSRVPGM(*NONE) BNDDIR(*NONE) ACTGRP(*CALLER)",
-    "environment": "ile"
+    "environment": "ile",
+    "type": "file"
   },
   {
     "extensions": [
@@ -162,7 +177,8 @@
     "deployFirst": true,
     "name": "Create Service Program (CRTSRVPGM with source)",
     "command": "CRTSRVPGM SRVPGM(&CURLIB/&NAME) SRCSTMF('&RELATIVEPATH') BNDSRVPGM(*NONE) BNDDIR(*NONE) ACTGRP(*CALLER)",
-    "environment": "ile"
+    "environment": "ile",
+    "type": "file"
   },
   {
     "extensions": [
@@ -171,7 +187,8 @@
     "name": "Build all with gmake",
     "command": "/QOpenSys/pkgs/bin/gmake BUILDLIB=&CURLIB ERR=*EVENTF",
     "environment": "pase",
-    "deployFirst": true
+    "deployFirst": true,
+    "type": "file"
   },
   {
     "extensions": [
@@ -180,7 +197,8 @@
     "name": "Build current with gmake",
     "command": "/QOpenSys/pkgs/bin/gmake &BASENAME BUILDLIB=&CURLIB ERR=*EVENTF",
     "environment": "pase",
-    "deployFirst": true
+    "deployFirst": true,
+    "type": "file"
   },
   {
     "extensions": [
@@ -193,7 +211,8 @@
     "postDownload": [
       ".logs",
       ".evfevent"
-    ]
+    ],
+    "type": "file"
   },
   {
     "extensions": [
@@ -206,7 +225,8 @@
     "postDownload": [
       ".logs",
       ".evfevent"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Build current with Source Orbit 🔨",
@@ -218,10 +238,36 @@
     ],
     "postDownload": [
       ".evfevent/"
-    ]
+    ],
+    "type": "file"
   },
   {
     "name": "Build entire project with Source Orbit 🔨",
+    "command": "so -bf make && /QOpenSys/pkgs/bin/gmake LIBL='&LIBLS' BIN_LIB=&CURLIB OPT=*EVENTF",
+    "environment": "pase",
+    "deployFirst": true,
+    "extensions": [
+      "GLOBAL"
+    ],
+    "postDownload": [
+      ".evfevent/"
+    ],
+    "type": "file"
+  },
+  {
+    "name": "Build current with Source Orbit 🔨 (1)",
+    "command": "so -bf make -s &RELATIVEPATH && /QOpenSys/pkgs/bin/gmake LIBL='&LIBLS' BIN_LIB=&CURLIB OPT=*EVENTF",
+    "environment": "pase",
+    "deployFirst": true,
+    "extensions": [
+      "GLOBAL"
+    ],
+    "postDownload": [
+      ".evfevent/"
+    ]
+  },
+  {
+    "name": "Build entire project with Source Orbit 🔨 (1)",
     "command": "so -bf make && /QOpenSys/pkgs/bin/gmake LIBL='&LIBLS' BIN_LIB=&CURLIB OPT=*EVENTF",
     "environment": "pase",
     "deployFirst": true,

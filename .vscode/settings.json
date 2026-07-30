@@ -3,7 +3,7 @@
     {
       "host": "pub400.com",
       "port": 2222,
-      "deployMethod": "changed",
+      "deployMethod": "unstaged",
       "sourceFileEncoding": "37",
       "sourceFileCCSID": 37,
       "localEncoding": "UTF-8",
