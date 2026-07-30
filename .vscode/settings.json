@@ -5,7 +5,7 @@
       "port": 2222,
       "deployMethod": "unstaged",
       "sourceFileEncoding": "37",
-      "sourceFileCCSID": 37,
+      "sourceFileCCSID": "37",
       "localEncoding": "UTF-8",
       "libraryList": ["RAIPX61", "RAIPX62", "RAIPX6B", "QGPL"],
       "currentLibrary": "RAIPX61",
