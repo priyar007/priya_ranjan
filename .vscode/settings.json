@@ -6,7 +6,10 @@
       "deployMethod": "changed",
       "sourceFileEncoding": "37",
       "sourceFileCCSID": 37,
-      "localEncoding": "UTF-8"
+      "localEncoding": "UTF-8",
+      "libraryList": ["RAIPX61", "RAIPX62", "RAIPX6B", "QGPL"],
+      "currentLibrary": "RAIPX61",
+      "homeDirectory": "/home/RAIPX6"
     }
   ]
 }
