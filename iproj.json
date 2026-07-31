@@ -1,0 +1,66 @@
+{
+  "description": "IBM i First Project — RPGLE ILE HTTPS State Viewer",
+  "version": "1.0.0",
+  "repository": "RAIPX6_GIT/priya_ranjan",
+  "author": "Priya Ranjan",
+  "license": "MIT",
+  "host": "pub400.com",
+  "deployLocation": "/home/RAIPX6/builds",
+  "objlib": "RAIPX61",
+  "curlib": "RAIPX61",
+  "preUsrlibl": ["RAIPX61"],
+  "postUsrlibl": ["QC2LE"],
+  "includePath": [
+    "IBM_i_First_Project/QRPGLESRC"
+  ],
+  "buildCommand": "CRTCLPGM PGM(RAIPX61/STATECL) SRCFILE(RAIPX61/QCLSRC) SRCMBR(STATECL)",
+  "localBuildOutput": ".logs",
+  "sourceFileCCSID": "37",
+  "rules": {
+    "IBM_i_First_Project/QRPGLESRC/*.rpgle": {
+      "type": "RPGLE",
+      "targets": [
+        {
+          "name": "MODULE",
+          "command": "CRTRPGMOD MODULE(RAIPX61/{member}) SRCFILE(RAIPX61/QRPGLESRC) SRCMBR({member}) DFTACTGRP(*NO) ACTGRP(QILE) DBGVIEW(*LIST)"
+        }
+      ]
+    },
+    "IBM_i_First_Project/QRPGLESRC/*.sqlrpgle": {
+      "type": "SQLRPGLE",
+      "targets": [
+        {
+          "name": "MODULE",
+          "command": "CRTSQLRPGI OBJ(RAIPX61/{member}) SRCFILE(RAIPX61/QRPGLESRC) SRCMBR({member}) OBJTYPE(*MODULE) RPGPPOPT(*LVL2) COMPILEOPT('DFTACTGRP(*NO) ACTGRP(QILE)')"
+        }
+      ]
+    },
+    "IBM_i_First_Project/QDDSSRC/*.dspf": {
+      "type": "DSPF",
+      "targets": [
+        {
+          "name": "FILE",
+          "command": "CRTDSPF FILE(RAIPX61/{member}) SRCFILE(RAIPX61/QDDSSRC) SRCMBR({member})"
+        }
+      ]
+    },
+    "IBM_i_First_Project/QCLSRC/*.clp": {
+      "type": "CLP",
+      "targets": [
+        {
+          "name": "PGM",
+          "command": "CRTCLPGM PGM(RAIPX61/{member}) SRCFILE(RAIPX61/QCLSRC) SRCMBR({member})"
+        }
+      ]
+    },
+    "IBM_i_First_Project/QSRVSRC/*.bnd": {
+      "type": "BND",
+      "targets": [
+        {
+          "name": "SRVPGM",
+          "command": "CRTSRVPGM SRVPGM(RAIPX61/HTTPSVCLIB) MODULE(RAIPX61/HTTPSVC) SRCFILE(RAIPX61/QSRVSRC) SRCMBR(HTTPSVCBND) EXPORT(*ALL)"
+        }
+      ]
+    }
+  }
+}
